@@ -1,0 +1,99 @@
+import pandas as pd
+import streamlit as st
+import plotly.express as px
+
+st.title('Fuel Analysis')
+
+st.markdown("""
+This application contains a brief analysis of fuel and how it intersects with vehicle and transmission types. The source of this information is car advertisement dataset provided for this project.
+""")
+
+car_data = car_data = pd.read_csv('/Users/leahdeyoung/Desktop/GitHub/car-data-project-practicum/vehicles_us.csv', encoding = "utf-8")
+
+car_type_frequency = car_data.groupby('type')['type'].count()
+car_fuel = car_data.groupby('fuel')['fuel'].count()
+car_transmission = car_data.groupby('transmission')['transmission'].count()
+
+car_type_hist = px.histogram(car_type_frequency, 
+                             y='type', 
+                             nbins=8, 
+                             title='Car Type Frequency')
+
+car_fuel_hist = px.histogram(car_fuel, 
+                             x='fuel', 
+                             nbins=5, 
+                             title='Fuel and Transmission Type Frequency')
+car_trans_hist = px.histogram(car_transmission, 
+                             x='transmission', 
+                             nbins=10,
+                             title='Transmission Type Frequency' 
+                             )
+
+grp = car_data.groupby(['fuel', 'transmission'])
+car_fuel_transmission = grp['price'].mean()
+car_fuel_transmission = car_fuel_transmission.reset_index().rename(columns={0: 'price'})
+
+car_fuel_scatter = px.scatter(car_fuel_transmission,
+                              x='fuel',
+                              y='price',
+                              color='transmission',
+                              labels={
+                                'value': 'Average Price',
+                                'index': 'Transmission Type'},                              
+                              title='Average Price per Type of Transmission and Fuel')
+
+grp2 = car_data.groupby(['fuel', 'type'])
+car_type = grp2['price'].mean()
+car_type = car_type.reset_index().rename(columns={0: 'price'})
+
+car_type_scatter = px.scatter(car_type,
+                              x='type',
+                              y='price',
+                              color='fuel',
+                              labels={
+                                  'value': 'Number of Vehicles',
+                                  'type': 'Vehicle Type'},
+                              title='Vehicle Type Count')
+
+def show_info (carlist, cargraph, button_1, button_2):
+    if st.button(button_1):
+        st.dataframe(carlist)
+    if st.button(button_2):
+        st.plotly_chart(cargraph, theme=None, use_container_width=True) 
+
+
+st.header('Vehicle Type Frequency')
+st.markdown("""
+This lists the various types of vehicles and how often they occur in the data.
+""")
+            
+show_info(car_type_frequency, car_type_hist, 'Vehicle Type List', 'Vehicle Type Graph')
+
+st.header('Fuel or Transmission Type')
+st.markdown("""
+This lists the various types of fuels and transmissions and how often they occur in the data.
+""")
+            
+if st.checkbox('Fuel List'):
+    st.dataframe(car_fuel)
+if st.checkbox('Transmission List'):
+    st.dataframe(car_transmission)
+
+if st.checkbox('Fuel Type'):
+    st.plotly_chart(car_fuel_hist, theme=None, use_container_width=True)
+if st.checkbox('Transmission Type'):
+    st.plotly_chart(car_trans_hist, theme=None, use_container_width=True)
+
+st.header('Vehicle Fuel and Transmission Types and Prices')
+st.markdown("""
+This lists the  combinations of fuels and transmissions and average prices, and a scatter plot to visualize how they occur in the data.
+""")
+
+show_info(car_fuel_transmission, car_fuel_scatter, 'Vehicle Fuel/Transmission List', 'Vehicle Fuel/Transmission Graph')
+
+st.header('Vehicle Types and the Fuels They Use')
+st.markdown("""
+This lists the various types of vehicles, the fuels they use, and the average price per vehicle/fuel type and displays a scatter plot demonstrating the data visually.
+""")
+            
+show_info(car_type, car_type_scatter, 'Vehicle Type/Fuel List', 'Vehicle Type/Fuel Graph')
