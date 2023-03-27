@@ -9,7 +9,7 @@ This application contains a brief analysis of fuel and how it intersects with ve
 """)
 
 #reading in the data
-car_data = car_data = pd.read_csv('/Users/leahdeyoung/Desktop/GitHub/car-data-project-practicum/vehicles_us.csv', encoding = "utf-8")
+car_data = car_data = pd.read_csv('https://raw.githubusercontent.com/LDeYoung17/car-data-project-practicum/main/vehicles_us.csv', encoding = "utf-8")
 
 #data grouping for all three histograms
 car_type_frequency = car_data.groupby('type')['type'].count()
