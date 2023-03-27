@@ -60,9 +60,10 @@ car_type_scatter = px.scatter(car_type,
                               y='price',
                               color='fuel',
                               labels={
-                                  'value': 'Number of Vehicles',
-                                  'type': 'Vehicle Type'},
-                              title='Vehicle Type Count')
+                                  'price': 'Average Price',
+                                  'type': 'Vehicle Type',
+                                  'fuel': 'Fuel Type'},
+                              title='Average Price for Vehicle and Fuel Type')
 
 #this function will display graphs and dataframes for various data breakdowns when the appropriate button is clicked
 def show_info (carlist, cargraph, button_1, button_2):
