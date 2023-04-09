@@ -65,6 +65,26 @@ car_type_scatter = px.scatter(car_type,
                                   'fuel': 'Fuel Type'},
                               title='Average Price for Vehicle and Fuel Type')
 
+#Select two graphs and compare
+graph_list = (car_type_hist, car_fuel_hist, car_trans_hist, car_type_scatter, car_fuel_scatter)
+titles = []
+for graphed in graph_list:
+    titles.append(graphed['layout']['title']['text'])
+
+# Graph title filter
+selected_title = st.sidebar.multiselect('Select title', options=['All'] + titles)
+
+# Filter the graphs based on selected titles
+filtered_graphs=[]
+for graphed in graph_list:
+    for title in selected_title:
+        if title in graphed['layout']['title']['text']:
+            filtered_graphs.append(graphed)
+
+# Display the selected graphs
+for graphs in filtered_graphs:
+    st.plotly_chart(graphs)
+
 #this function will display graphs and dataframes for various data breakdowns when the appropriate button is clicked
 def show_info (carlist, cargraph, button_1, button_2):
     if st.button(button_1):
